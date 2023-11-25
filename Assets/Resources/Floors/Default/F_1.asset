@@ -15,5 +15,5 @@ MonoBehaviour:
   normalFloor: 1
   startingFloor: 0
   undergroundFloor: 0
-  numberOfConfigurations: 1
-  weight: 1
+  numberOfConfigurations: 3
+  weight: 4

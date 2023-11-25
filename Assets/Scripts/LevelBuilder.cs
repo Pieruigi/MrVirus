@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Virus.Scriptables;
 
 namespace Virus.Builder
@@ -8,12 +9,13 @@ namespace Virus.Builder
     public class LevelBuilder : Singleton<LevelBuilder>
     {
         List<Floor> floors = new List<Floor>();
-        public ICollection<Floor> Floors
-        {
-            get { return floors.AsReadOnly(); }
-        }
+        //public IList<Floor> Floors
+        //{
+        //    get { return floors.AsReadOnly(); }
+        //}
 
         List<Elevator> elevators = new List<Elevator>();
+        
 
         int startingFloorIndex = -1;
         public int StartingFloorIndex
@@ -55,6 +57,9 @@ namespace Virus.Builder
 
             LoadAssets();
 
+            InitializeFloors();
+
+            InitializeElevators();
         }
 
         void Initialize()
@@ -172,6 +177,18 @@ namespace Virus.Builder
                 floors[i].Init(tmpList[Random.Range(0, tmpList.Count)]);
             }
 
+        }
+
+        void InitializeFloors()
+        {
+            FloorSceneManager.Instance.Initialize(floors, startingFloorIndex);
+        }
+
+      
+
+        void InitializeElevators()
+        {
+            ElevatorManager.Instance.Initialize(elevators);
         }
 
         public int GetFloorIndex(Floor floor)
