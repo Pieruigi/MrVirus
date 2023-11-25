@@ -20,7 +20,7 @@ namespace Virus
             foreach(var elevator in elevators)
             {
                 GameObject g = Instantiate(elevatorPrefab, root.transform);
-                ElevatorController ctrl = g.AddComponent<ElevatorController>();
+                ElevatorController ctrl = g.GetComponent<ElevatorController>();
                 ctrl.Initialize(elevator);
                 controllers.Add(ctrl);
             }
