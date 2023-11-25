@@ -8,10 +8,18 @@ namespace Virus.Builder
     public class LevelBuilder : Singleton<LevelBuilder>
     {
         List<Floor> floors = new List<Floor>();
+        public ICollection<Floor> Floors
+        {
+            get { return floors.AsReadOnly(); }
+        }
 
         List<Elevator> elevators = new List<Elevator>();
 
         int startingFloorIndex = -1;
+        public int StartingFloorIndex
+        {
+            get { return startingFloorIndex; }
+        }
 
         int minFloorCount = 6;
         int maxFloorCount = 8;
@@ -41,11 +49,17 @@ namespace Virus.Builder
 #endif
         public void Build()
         {
+            Initialize();
+
             CreateLogicBuild();
 
             LoadAssets();
 
-            CreateGeometry();
+        }
+
+        void Initialize()
+        {
+            themeName = GameManager.Instance.Theme.ToString();
         }
 
         void CreateLogicBuild()
@@ -159,12 +173,6 @@ namespace Virus.Builder
             }
 
         }
-
-        void CreateGeometry()
-        {
-
-        }
-
 
         public int GetFloorIndex(Floor floor)
         {

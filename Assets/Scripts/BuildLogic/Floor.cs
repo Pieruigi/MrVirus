@@ -26,6 +26,11 @@ namespace Virus.Builder
             // Set a random configuration
             configurationId = Random.Range(0, asset.NumberOfConfigurations);
         }
+
+        public string GetSceneName()
+        {
+            return asset.name;
+        }
     }
 
 }
