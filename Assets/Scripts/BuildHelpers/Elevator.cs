@@ -13,7 +13,10 @@ namespace Virus.Builder
         // The list of floors the elevator can reach
        
         List<Floor> floors = new List<Floor>();
-
+        public IList<Floor> Floors
+        {
+            get { return floors.AsReadOnly(); }
+        }
        
         /// <summary>
         /// Add a floor that is reacheable by this elevator
@@ -34,7 +37,7 @@ namespace Virus.Builder
             else
                 floors.Insert(index, floor);
         }
-
+                
         
     }
 

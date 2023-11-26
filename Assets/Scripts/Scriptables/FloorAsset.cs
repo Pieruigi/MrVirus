@@ -10,20 +10,7 @@ namespace Virus.Scriptables
     {
         public const string ResourceFolder = "Floors";
 
-        //[SerializeField]
-        //string sceneName;
-        //public string SceneName
-        //{
-        //    get { return sceneName; }
-        //}
-
-        //[SerializeField]
-        //FloorType type = FloorType.SimpleFloor;
-        //public FloorType Type
-        //{
-        //    get { return type; }
-        //}
-
+     
         [SerializeField]
         bool normalFloor = false;
         public bool NormalFloor
@@ -52,6 +39,7 @@ namespace Virus.Scriptables
             get { return numberOfConfigurations; }
         }
 
+       
         [SerializeField]
         int weight = 1;
         public int Weight

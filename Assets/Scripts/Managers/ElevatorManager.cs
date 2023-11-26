@@ -2,26 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Virus.Builder;
+using Virus.Scriptables;
 
 namespace Virus
 {
     public class ElevatorManager : Singleton<ElevatorManager>
     {
-        [SerializeField]
-        GameObject elevatorPrefab;
 
         List<ElevatorController> controllers = new List<ElevatorController>();
 
         public void Initialize(List<Elevator> elevators)
         {
-            GameObject root = new GameObject("Elevators");
+            // Read assets by theme
+            Debug.Log($"Loading elevator asset at {System.IO.Path.Combine(ElevatorAsset.ResourceFolder, GameManager.Instance.Theme.ToString())}");
+            ElevatorAsset asset = Resources.LoadAll<ElevatorAsset>(System.IO.Path.Combine(ElevatorAsset.ResourceFolder, GameManager.Instance.Theme.ToString()))[0];
+            Debug.Log($"Elevator asset loaded:{asset.name}");
+            GameObject elevatorPrefab = asset.ElevatorPrefab;
+            GameObject elevatorSpawnGroupPrefab = asset.ElevatorSpawnGroupPrefab;
+
+            // Instantiate the spawn group
+            GameObject root = Instantiate(elevatorSpawnGroupPrefab, Vector3.zero, Quaternion.identity);
 
             // We need to instantiate and initialize each elevator
-            foreach(var elevator in elevators)
+            for(int i=0; i<elevators.Count; i++)
             {
-                GameObject g = Instantiate(elevatorPrefab, root.transform);
+                // Instantiate geometry
+                GameObject g = Instantiate(elevatorPrefab, root.transform.GetChild(i).position, root.transform.GetChild(i).rotation, root.transform);
+                // Initialize elevator controller
                 ElevatorController ctrl = g.GetComponent<ElevatorController>();
-                ctrl.Initialize(elevator);
+                ctrl.Initialize(elevators[i]);
                 controllers.Add(ctrl);
             }
         }

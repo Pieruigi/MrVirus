@@ -181,7 +181,7 @@ namespace Virus.Builder
 
         void InitializeFloors()
         {
-            FloorSceneManager.Instance.Initialize(floors, startingFloorIndex);
+            FloorManager.Instance.Initialize(floors, startingFloorIndex);
         }
 
       
@@ -189,16 +189,6 @@ namespace Virus.Builder
         void InitializeElevators()
         {
             ElevatorManager.Instance.Initialize(elevators);
-        }
-
-        public int GetFloorIndex(Floor floor)
-        {
-            return floors.IndexOf(floor);
-        }
-
-        public int GetElevatorIndex(Elevator elevator)
-        {
-            return elevators.IndexOf(elevator);
         }
 
         
