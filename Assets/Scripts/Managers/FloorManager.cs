@@ -14,15 +14,19 @@ namespace Virus
 
         // Caching
         List<FloorController> controllers = new List<FloorController>();
-        List<Floor> floors = new List<Floor>();
+        //List<Floor> floors = new List<Floor>();
 
         int startingFloorIndex = -1;
         int currentFloorIndex = -1;
-    
+
+        public int FloorCount
+        {
+            get { return controllers.Count; }
+        }
 
         public Floor CurrentFloor
         {
-            get { return floors[currentFloorIndex]; }
+            get { return controllers[currentFloorIndex].Floor; }
         }
 
         void SetFloorActive(int index, bool value)
@@ -32,9 +36,9 @@ namespace Virus
             
         }
 
-        IEnumerator InstantiateFloors(List<Floor> floors, int startingFloorIndex)
+        public IEnumerator Initialize(List<Floor> floors, int startingFloorIndex)
         {
-            this.floors = floors;
+            //this.floors = floors;
             // Load all the scenes
             foreach (var floor in floors)
             {
@@ -46,6 +50,7 @@ namespace Virus
             Debug.Log("Scene:" + SceneManager.GetSceneAt(1).name);
 
             yield return null;
+            
 
             this.startingFloorIndex = startingFloorIndex;
             //this.floors = floors;
@@ -73,24 +78,26 @@ namespace Virus
             SetFloorActive(currentFloorIndex, true);
         }
 
-        public void Initialize(List<Floor> floors, int startingFloorIndex)
-        {
-            StartCoroutine(InstantiateFloors(floors, startingFloorIndex));
-
-        }
+     
 
         public void ActivateFloor(Floor floor)
         {
-            ActivateFloor(floors.IndexOf(floor));
+            ActivateFloor(GetFloorIndex(floor));
         }
 
        
 
         public int GetFloorIndex(Floor floor)
         {
-            return floors.IndexOf(floor);
+            return controllers.FindIndex(c => c.Floor == floor);
         }
 
+        public Floor GetFloorAt(int index)
+        {
+            return controllers[index].Floor;
+        }
+
+        
 
     }
 

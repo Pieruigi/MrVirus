@@ -9,6 +9,10 @@ namespace Virus
     public class FloorController : MonoBehaviour
     {
         Floor floor;
+        public Floor Floor
+        {
+            get { return floor; }
+        }
         
         public void Activate(bool value)
         {

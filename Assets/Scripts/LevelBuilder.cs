@@ -57,9 +57,14 @@ namespace Virus.Builder
 
             LoadAssets();
 
-            InitializeFloors();
+            StartCoroutine(CreateGeometry());
+        }
 
-            InitializeElevators();
+        IEnumerator CreateGeometry()
+        {
+            yield return FloorManager.Instance.Initialize(floors, startingFloorIndex);
+
+            ElevatorManager.Instance.Initialize(elevators);
         }
 
         void Initialize()
@@ -177,18 +182,6 @@ namespace Virus.Builder
                 floors[i].Init(tmpList[Random.Range(0, tmpList.Count)]);
             }
 
-        }
-
-        void InitializeFloors()
-        {
-            FloorManager.Instance.Initialize(floors, startingFloorIndex);
-        }
-
-      
-
-        void InitializeElevators()
-        {
-            ElevatorManager.Instance.Initialize(elevators);
         }
 
         
