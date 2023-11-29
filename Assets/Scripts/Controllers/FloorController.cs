@@ -8,6 +8,13 @@ namespace Virus
 {
     public class FloorController : MonoBehaviour
     {
+        [SerializeField]
+        Transform playerSpawnPoint; // Only valid for the starting floor
+        public Transform PlayerSpawnPoint
+        {
+            get { return playerSpawnPoint; }
+        }
+
         Floor floor;
         public Floor Floor
         {

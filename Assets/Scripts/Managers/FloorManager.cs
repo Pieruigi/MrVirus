@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Virus.Builder;
@@ -8,8 +9,7 @@ namespace Virus
 {
     public class FloorManager : Singleton<FloorManager>
     {
-        public const string FloorRootTag = "SceneRoot";
-
+        
         List<Scene> scenes = new List<Scene>();
 
         // Caching
@@ -97,7 +97,10 @@ namespace Virus
             return controllers[index].Floor;
         }
 
-        
+        public Transform GetSpawnPoint()
+        {
+            return controllers[startingFloorIndex].PlayerSpawnPoint;
+        }
 
     }
 

@@ -43,6 +43,8 @@ namespace Virus
 
             GetComponent<Renderer>().material = mat;
         }
+
+
     }
 
 }

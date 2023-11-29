@@ -62,9 +62,13 @@ namespace Virus.Builder
 
         IEnumerator CreateGeometry()
         {
+            // Create scenes 
             yield return FloorManager.Instance.Initialize(floors, startingFloorIndex);
-
+            // Elevators
             ElevatorManager.Instance.Initialize(elevators);
+            // Player
+            PlayerManager.Instance.MoveToSpawnPoint();
+
         }
 
         void Initialize()
