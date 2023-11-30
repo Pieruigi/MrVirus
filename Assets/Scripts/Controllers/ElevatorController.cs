@@ -18,6 +18,10 @@ namespace Virus
         Elevator elevator;
 
         Floor elevatorFloor = null; // The actual floor the elevator is on
+        public Floor ElevatorFloor
+        {
+            get { return elevatorFloor; }
+        }
 
         private void Awake()
         {
@@ -61,12 +65,10 @@ namespace Virus
         {
             this.elevator = elevator;
             // Set the current floor randomly choosing among all recheable floors 
-            Debug.Log("Elevator Floor Count:" + elevator.Floors.Count);
             elevatorFloor = elevator.Floors[Random.Range(0, elevator.Floors.Count)];
-            Debug.Log($"{name} Floor:{elevatorFloor}" );
             // Initialize buttons
-            // The external button will be checke floor by floor
-            externalButtonController.SetWorking(elevatorFloor == FloorManager.Instance.CurrentFloor);
+            // Check the external button
+            externalButtonController.SetWorking(elevator.Floors.Contains(FloorManager.Instance.CurrentFloor));
             // The internal button only once
             for(int i=0; i<internalButtonsControllers.Count; i++)
             {
@@ -82,7 +84,7 @@ namespace Virus
         /// <summary>
         /// Used when the elevator is on a different floor.
         /// </summary>
-        void CallElevator()
+        public void CallElevator()
         {
             Debug.Log($"Call elevator {elevator.name}");
 
@@ -93,7 +95,7 @@ namespace Virus
             elevatorFloor = FloorManager.Instance.CurrentFloor;
         }
 
-        void MoveToFloor(Floor newFloor)
+        public void MoveToFloor(Floor newFloor)
         {
             Debug.Log($"Move elevator {elevator.name} from {elevatorFloor} to {newFloor}");
 
@@ -104,6 +106,11 @@ namespace Virus
             elevatorFloor = newFloor;
             // We need to activate the new floor
             FloorManager.Instance.ActivateFloor(elevatorFloor);
+        }
+
+        public void OpenDoors()
+        {
+            Debug.Log("Open Doors");
         }
     }
 
