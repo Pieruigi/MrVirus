@@ -30,15 +30,14 @@ namespace Virus
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
             RaycastHit hitInfo;
             IInteractable hit = null;
-            Debug.DrawRay(ray.origin, ray.direction, Color.red, 3f);
+            
             if(Physics.Raycast(ray, out hitInfo, range))
             {
                 // Try to get the interactable interface if any
                 hit = hitInfo.collider.GetComponent<IInteractable>();
             }
 
-            Debug.Log($"Hit:{hit}");
-
+         
             // If we were interacting with something then we stop interacting
             if(interactable != null && interactable != hit)
             {

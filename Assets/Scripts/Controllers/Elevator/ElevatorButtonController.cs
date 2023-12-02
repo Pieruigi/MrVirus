@@ -49,10 +49,9 @@ namespace Virus
 
         public void StartInteraction()
         {
-            if (elevatorController.ElevatorFloor == FloorManager.Instance.CurrentFloor)
-                elevatorController.OpenDoors();
-            else
-                elevatorController.CallElevator();
+            // We simply pass the button we pressed and it's up to the elevator controller to check the button type
+            elevatorController.ProcessElevatorButton(this);
+         
         }
 
         public void StopInteraction()
@@ -62,7 +61,6 @@ namespace Virus
 
         public bool IsInteractable()
         {
-            Debug.Log("Is Interactable");
             return working;
         }
     }
