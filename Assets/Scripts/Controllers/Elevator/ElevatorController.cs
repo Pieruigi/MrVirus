@@ -4,21 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using Virus.Builder;
 
 namespace Virus
 {
     public class ElevatorController : MonoBehaviour
     {
+        /// <summary>
+        /// Called when the elevator is moving
+        /// Param1: the current floor
+        /// Param2: true is the destination has been reached, otherwise false
+        /// </summary>
+        public UnityAction<Floor, bool> OnFloorReached; 
         
 
-        //[SerializeField]
-        ElevatorButtonController externalButtonController;
-
-        //[SerializeField]
-        List<ElevatorButtonController> internalButtonsControllers;
-
-
+     
         Elevator elevator;
 
         Floor elevatorFloor = null; // The actual floor the elevator is on
@@ -27,21 +28,12 @@ namespace Virus
             get { return elevatorFloor; }
         }
 
-        ElevatorDoorController doorController;
+        //ElevatorDoorController doorController;
         float timePerFloor = 2f;
         bool isMoving = false;
 
-        private void Awake()
-        {
-            externalButtonController = GetComponentsInChildren<ElevatorButtonController>().Where(b => b.External).First();
-            internalButtonsControllers = new List<ElevatorButtonController>(GetComponentsInChildren<ElevatorButtonController>().Where(b => !b.External));
-        }
-
-        private void Start()
-        {
-            doorController = GetComponentInChildren<ElevatorDoorController>();
-          
-        }
+        ElevatorDoorController doorController;
+        
 
 #if UNITY_EDITOR
         private void Update()
@@ -80,97 +72,61 @@ namespace Virus
             this.elevator = elevator;
             // Set the current floor randomly choosing among all recheable floors 
             elevatorFloor = elevator.Floors[Random.Range(0, elevator.Floors.Count)];
-            // Initialize buttons
-            // Check the external button
-            externalButtonController.SetWorking(elevator.Floors.Contains(FloorManager.Instance.CurrentFloor));
-            // The internal button only once
-            for(int i=0; i<internalButtonsControllers.Count; i++)
-            {
-                if (i >= FloorManager.Instance.FloorCount)
-                    internalButtonsControllers[i].SetWorking(false);
-                else
-                    internalButtonsControllers[i].SetWorking(elevator.Floors.Contains(FloorManager.Instance.GetFloorAt(i)));
-            }
-                
            
         }
 
-        public void ProcessElevatorButton(ElevatorButtonController buttonController)
+        public void SetDoorController(ElevatorDoorController doorController)
         {
-            if (buttonController != externalButtonController && !internalButtonsControllers.Contains(buttonController))
-            {
-                Debug.LogWarning($"No button found");
-                return;
-            }
-
-            if (buttonController == externalButtonController)
-                ProcessExternalButton();
-            else
-                ProcessInternalButton(buttonController);
-
+            this.doorController = doorController;
         }
 
-        /// <summary>
-        /// Used when the elevator is on a different floor.
-        /// </summary>
-        async void ProcessExternalButton()
+        public async void MoveToFloor(Floor destinationFloor)
         {
-            Debug.Log($"Call elevator {elevator.name}");
+            // Floor not reacheable
+            if (!CanReachFloor(destinationFloor) || isMoving)
+                return;
 
-            if (!elevator.Floors.Contains(FloorManager.Instance.CurrentFloor) || isMoving)
-                return; 
-
-            if(FloorManager.Instance.CurrentFloor == elevatorFloor)
+            if(destinationFloor == elevatorFloor)
             {
-                // If door is close then open it
-                if (!doorController.IsOpen)
-                    doorController.Open();
-            }
-            else
-            {
-                isMoving = true;
-                // We can play some effect here
-                // Get the current elevator floor index
-                int floorDiff = FloorManager.Instance.GetFloorIndex(elevatorFloor) - FloorManager.Instance.GetFloorIndex(FloorManager.Instance.CurrentFloor);                   
-                float time = timePerFloor * Mathf.Abs(floorDiff);
-                Debug.Log($"Elevator called at {System.DateTime.Now}");
-                await Task.Delay(System.TimeSpan.FromSeconds(time));
-                Debug.Log($"Elevator arrived at {System.DateTime.Now}");
-                // The elevator is on place
-                elevatorFloor = FloorManager.Instance.CurrentFloor;
-                isMoving = false;
-                // Open door
-                doorController.Open();
+                // Already on destination, just open the door
+                OnFloorReached?.Invoke(destinationFloor, true);
+                return;
             }
 
             
+            // Await for door to close if needed
+            if (doorController)
+                await doorController.Close();
+
+            // Let's move
+            isMoving = true;
+            int startingFloorIndex = FloorManager.Instance.GetFloorIndex(elevatorFloor);
+            int destinationFloorIndex = FloorManager.Instance.GetFloorIndex(destinationFloor);
+            int steps = destinationFloorIndex - startingFloorIndex;
+            int dir = (int)Mathf.Sign(steps); // >0: up, <0: down
+            steps = Mathf.Abs(steps);
+            while(steps > 0)
+            {
+                await Task.Delay(System.TimeSpan.FromSeconds(timePerFloor));
+                // New floor reached
+                steps--;
+                if (steps == 0)
+                    OnFloorReached?.Invoke(destinationFloor, true);
+                else
+                    OnFloorReached?.Invoke(FloorManager.Instance.GetFloorAt(destinationFloorIndex - dir * steps), false);
+            }
+            elevatorFloor = destinationFloor;
+            isMoving = false;
         }
 
-        void ProcessInternalButton(ElevatorButtonController buttonController)
+
+        public bool CanReachFloor(Floor floor)
         {
-            Floor newFloor = FloorManager.Instance.GetFloorAt(internalButtonsControllers.IndexOf(buttonController));
-            Debug.Log($"Move elevator {elevator.name} from {elevatorFloor} to {newFloor}");
+            if (!floor)
+                return false;
 
-            if (newFloor == elevatorFloor || !elevator.Floors.Contains(newFloor) || isMoving)
-                return;
-
-            // Add some effect
-            elevatorFloor = newFloor;
-            // We need to activate the new floor
-            FloorManager.Instance.ActivateFloor(elevatorFloor);
+            return elevator.Floors.Contains(floor);
         }
-
-        public void OpenDoors()
-        {
-            Debug.Log("Open Doors");
-            doorController.Open();
-        }
-
-        public void CloseDoors()
-        {
-            doorController.Close();
-        }
-
     }
 
 }

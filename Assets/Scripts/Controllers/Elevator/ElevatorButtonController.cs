@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Virus.Builder;
 using Virus.Interfaces;
 
 namespace Virus
@@ -21,20 +22,39 @@ namespace Virus
         ElevatorController elevatorController;
         bool working = false;
 
-        private void Awake()
+        int index = -1; // Only for internal buttons
+
+        private void Start()
         {
+            // Cache the elevator controller
+            elevatorController = GetComponentInParent<ElevatorController>();
+            Debug.Log($"ElevatorController:{elevatorController}");
+
             if (externalButton)
             {
                 // Since the external button changes depending on the floor the elevator is on we cache materials 
                 // for further use
                 workingMaterial = new Material(workingMaterial);
                 notWorkingMaterial = new Material(notWorkingMaterial);
+                // The button is working only if the current player floor is reacheable by the current elevator
+                SetWorking(elevatorController.CanReachFloor(FloorManager.Instance.CurrentFloor));
+            }
+            else // Internal button
+            {
+                // Get the button index
+                for(int i=0; i<transform.parent.childCount && index<0; i++)
+                {
+                    if (transform.parent.GetChild(i) == transform)
+                        index = i;           
+                }
+                // The button is working only if the corresponding floor is reacheable by the current elevator
+                SetWorking(elevatorController.CanReachFloor(FloorManager.Instance.GetFloorAt(index)));
             }
 
-            elevatorController = GetComponentInParent<ElevatorController>();
+            
         }
 
-        public void SetWorking(bool value)
+        void SetWorking(bool value)
         {
             working = value;
             // Set the working material
@@ -49,9 +69,18 @@ namespace Virus
 
         public void StartInteraction()
         {
-            // We simply pass the button we pressed and it's up to the elevator controller to check the button type
-            elevatorController.ProcessElevatorButton(this);
-         
+            // Get the right destination depending on the button is internal or externale
+            Floor destinationFloor = null;
+            if (externalButton)
+            {
+                destinationFloor = FloorManager.Instance.CurrentFloor;
+            }
+            else
+            {
+                destinationFloor = FloorManager.Instance.GetFloorAt(index);
+            }
+            // Move the elevator
+            elevatorController.MoveToFloor(destinationFloor);
         }
 
         public void StopInteraction()

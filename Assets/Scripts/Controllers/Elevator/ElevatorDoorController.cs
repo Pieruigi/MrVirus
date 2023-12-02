@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using Virus.Builder;
 
 namespace Virus
 {
@@ -25,18 +26,39 @@ namespace Virus
         System.DateTime lastOpenTime;
         float autoClosingTime = 10f;
 
-       
+        ElevatorController elevatorController;
+
+        private void Start()
+        {
+            // Cache the elevator controller
+            elevatorController = GetComponentInParent<ElevatorController>();
+            // Set the door controller
+            elevatorController.SetDoorController(this);
+            // Register events
+            elevatorController.OnFloorReached += HandleOnFloorReached;
+            
+        }
+
         // Update is called once per frame
         void Update()
         {
             // Close door after a given amount of time
             if (isOpen && (System.DateTime.Now-lastOpenTime).TotalSeconds > autoClosingTime)
             {
+#pragma warning disable 4014
                 Close();
+#pragma warning restore 4014
+                
             }
         }
 
-        public void Open()
+        void HandleOnFloorReached(Floor floor, bool destinationReached)
+        {
+            if(destinationReached)
+                Open();
+        }
+
+        void Open()
         {
             if (isOpen)
                 return;
@@ -49,7 +71,7 @@ namespace Virus
             
         }
 
-        public async void Close()
+        public async Task Close()
         {
             if (!isOpen)
                 return;

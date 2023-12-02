@@ -31,7 +31,6 @@ namespace Virus
 
         void SetFloorActive(int index, bool value)
         {
-            Debug.Log($"Enabling root to floor '{scenes[index].name}':{value}");
             controllers[index].Activate(value);
             
         }
@@ -47,8 +46,7 @@ namespace Virus
             }
 
 
-            Debug.Log("Scene:" + SceneManager.GetSceneAt(1).name);
-
+          
             yield return null;
             
 
@@ -94,7 +92,10 @@ namespace Virus
 
         public Floor GetFloorAt(int index)
         {
-            return controllers[index].Floor;
+            if(index < controllers.Count)
+                return controllers[index].Floor;
+
+            return null;
         }
 
         public Transform GetSpawnPoint()

@@ -14,9 +14,7 @@ namespace Virus
         public void Initialize(List<Elevator> elevators)
         {
             // Read assets by theme
-            Debug.Log($"Loading elevator asset at {System.IO.Path.Combine(ElevatorAsset.ResourceFolder, GameManager.Instance.Theme.ToString())}");
             ElevatorAsset asset = Resources.LoadAll<ElevatorAsset>(System.IO.Path.Combine(ElevatorAsset.ResourceFolder, GameManager.Instance.Theme.ToString()))[0];
-            Debug.Log($"Elevator asset loaded:{asset.name}");
             GameObject elevatorPrefab = asset.ElevatorPrefab;
             GameObject elevatorSpawnGroupPrefab = asset.ElevatorSpawnGroupPrefab;
 

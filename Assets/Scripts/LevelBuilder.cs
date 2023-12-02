@@ -9,11 +9,7 @@ namespace Virus.Builder
     public class LevelBuilder : Singleton<LevelBuilder>
     {
         List<Floor> floors = new List<Floor>();
-        //public IList<Floor> Floors
-        //{
-        //    get { return floors.AsReadOnly(); }
-        //}
-
+       
         List<Elevator> elevators = new List<Elevator>();
         
 
@@ -26,7 +22,7 @@ namespace Virus.Builder
         int minFloorCount = 6;
         int maxFloorCount = 8;
         int elevatorCount = 3;
-        int maxUndergroundFloors = 2;
+        int maxUndergroundFloors = 0;
 
         string themeName = "DefaultTheme";
 
@@ -118,7 +114,6 @@ namespace Virus.Builder
             // Loop through all the remaining floors
             while(notConnectedFloors.Count > 0)
             {
-                Debug.Log("NotConnected:" + notConnectedFloors.Count);
                 // Get a new floor to connect to the last selected
                 nextFloor = notConnectedFloors[Random.Range(0, notConnectedFloors.Count)];
                 notConnectedFloors.Remove(nextFloor);

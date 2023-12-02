@@ -62,14 +62,18 @@ namespace Virus
                     }
                    
                 }
-                else // Interactable is not null
+                else 
                 {
-                    // Check the mouse button up
-                    if (Input.GetMouseButtonUp(0))
+                    if(interactable != null)
                     {
-                        interactable.StopInteraction();
-                        interactable = null;
+                        // Check the mouse button up
+                        if (Input.GetMouseButtonUp(0))
+                        {
+                            interactable.StopInteraction();
+                            interactable = null;
+                        }
                     }
+                    
                 }
                 
 

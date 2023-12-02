@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc389dae9d94e8f41bf9365092cc6618, type: 3}
-  m_Name: U_F_1
+  m_Name: F_3
   m_EditorClassIdentifier: 
-  normalFloor: 0
+  normalFloor: 1
   startingFloor: 0
-  undergroundFloor: 1
+  undergroundFloor: 0
   numberOfConfigurations: 3
-  weight: 1
+  weight: 3
