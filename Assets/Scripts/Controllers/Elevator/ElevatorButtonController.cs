@@ -28,8 +28,7 @@ namespace Virus
         {
             // Cache the elevator controller
             elevatorController = GetComponentInParent<ElevatorController>();
-            Debug.Log($"ElevatorController:{elevatorController}");
-
+       
             if (externalButton)
             {
                 // Since the external button changes depending on the floor the elevator is on we cache materials 
@@ -38,6 +37,8 @@ namespace Virus
                 notWorkingMaterial = new Material(notWorkingMaterial);
                 // The button is working only if the current player floor is reacheable by the current elevator
                 SetWorking(elevatorController.CanReachFloor(FloorManager.Instance.CurrentFloor));
+                // Only external buttons must check every time the floor changes
+                FloorManager.Instance.OnFloorChanged += () => { SetWorking(elevatorController.CanReachFloor(FloorManager.Instance.CurrentFloor));};
             }
             else // Internal button
             {
@@ -51,7 +52,7 @@ namespace Virus
                 SetWorking(elevatorController.CanReachFloor(FloorManager.Instance.GetFloorAt(index)));
             }
 
-            
+           
         }
 
         void SetWorking(bool value)

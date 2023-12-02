@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Virus.Builder;
 
@@ -10,6 +11,8 @@ namespace Virus
     public class FloorManager : Singleton<FloorManager>
     {
         
+        public UnityAction OnFloorChanged;
+
         List<Scene> scenes = new List<Scene>();
 
         // Caching
@@ -74,6 +77,7 @@ namespace Virus
             Debug.Log($"Setting current floor index to {floorIndex}");
             currentFloorIndex = floorIndex;
             SetFloorActive(currentFloorIndex, true);
+            OnFloorChanged?.Invoke();
         }
 
      

@@ -24,7 +24,7 @@ namespace Virus
         Floor floor;
 
         Vector3 scaleDefault;
-        float scaleMul = 1.2f;
+        float scaleMul = 1.4f;
         bool selected = false;
 
         // Start is called before the first frame update
@@ -48,7 +48,7 @@ namespace Virus
             Floor floor = FloorManager.Instance.GetFloorAt(index);
             SetReacheable(elevatorController.CanReachFloor(floor));
 
-            if (reacheable)
+            //if (reacheable)
             {
                 // Update display
                 UpdateDisplay(elevatorController.ElevatorFloor);

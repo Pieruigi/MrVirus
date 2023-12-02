@@ -33,6 +33,7 @@ namespace Virus
         bool isMoving = false;
 
         ElevatorDoorController doorController;
+
         
 
 #if UNITY_EDITOR
@@ -72,7 +73,7 @@ namespace Virus
             this.elevator = elevator;
             // Set the current floor randomly choosing among all recheable floors 
             elevatorFloor = elevator.Floors[Random.Range(0, elevator.Floors.Count)];
-           
+            
         }
 
         public void SetDoorController(ElevatorDoorController doorController)
@@ -117,6 +118,9 @@ namespace Virus
             }
             elevatorFloor = destinationFloor;
             isMoving = false;
+            // Change floor
+            FloorManager.Instance.ActivateFloor(elevatorFloor);
+
         }
 
 
